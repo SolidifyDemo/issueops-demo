@@ -26,10 +26,9 @@ jobs:
           script: |
               const issueBody = context.payload.issue.body;
               const parsedName = issueBody.match(/### Repository name\s+(?<repository>[^\s]+)\s/);
-              if (core) {
-                if (parsedName) {
-                    core.setOutput('reponame', parsedName.groups.repository.trim());
-                }
+              console.log(parsedName);
+              if (parsedName) {
+                  core.setOutput('reponame', parsedName.groups.repository.trim());
               }
               return parsedName
         
@@ -38,8 +37,8 @@ jobs:
         with:
            github-token: ${{ secrets.MY_PAT }}
            script: |       
-               var org = context.payload.repository.owner.login
-               var name = ${{ steps.parse-issue.outputs.reponame }}
+               var org = context.payload.repository.owner.login;
+               var name = "${{ steps.parse-issue.outputs.reponame }}";
                github.rest.repos.createInOrg({
                org,
                name,
