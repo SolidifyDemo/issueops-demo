@@ -1,0 +1,56 @@
+name: Create repo IssueOps Sample
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    
+    if: github.event_name == 'issues' &&
+      (github.event.action == 'opened' || github.event.action == 'edited')
+
+    steps:
+      - name: Check out scripts
+        uses: actions/checkout@v3
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: $
+        run: echo "$GITHUB_CONTEXT"
+        
+        - name: Parse Issue
+          id: parse-issue
+            uses: actions/github-script@v6
+            with:
+              script: |
+                  const issueBody = context.payload.issue.body;
+                  const parsedName = issueBody.match(/### Repository name\s+(?<repository>[^\s]+)\s/);
+                  if (core) {
+                    if (parsedName) {
+                        core.setOutput('reponame', parsedName.groups.repository.trim());
+                    }
+                  }
+                  return parsedName
+        
+        - name: Create a Repository
+          uses: actions/github-script@v6
+          with:
+             script: |       
+                 var org = context.payload.repository.owner.login
+                 var name = {{$steps.parse-issue-output.reponame }}
+                 github.rest.repos.createInOrg({
+                 org,
+                 name,
+                 });
+               
+       - uses: actions/github-script@v6
+          with:
+            script: |
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '👋 Repository has been created!'
+              })
+        
