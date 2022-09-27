@@ -19,38 +19,38 @@ jobs:
           GITHUB_CONTEXT: $
         run: echo "$GITHUB_CONTEXT"
         
-        - name: Parse Issue
-          id: parse-issue
-            uses: actions/github-script@v6
-            with:
-              script: |
-                  const issueBody = context.payload.issue.body;
-                  const parsedName = issueBody.match(/### Repository name\s+(?<repository>[^\s]+)\s/);
-                  if (core) {
-                    if (parsedName) {
-                        core.setOutput('reponame', parsedName.groups.repository.trim());
-                    }
-                  }
-                  return parsedName
+      - name: Parse Issue
+        id: parse-issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+              const issueBody = context.payload.issue.body;
+              const parsedName = issueBody.match(/### Repository name\s+(?<repository>[^\s]+)\s/);
+              if (core) {
+                if (parsedName) {
+                    core.setOutput('reponame', parsedName.groups.repository.trim());
+                }
+              }
+              return parsedName
         
-        - name: Create a Repository
-          uses: actions/github-script@v6
-          with:
-             script: |       
-                 var org = context.payload.repository.owner.login
-                 var name = {{$steps.parse-issue-output.reponame }}
-                 github.rest.repos.createInOrg({
-                 org,
-                 name,
-                 });
+      - name: Create a Repository
+        uses: actions/github-script@v6
+        with:
+           script: |       
+               var org = context.payload.repository.owner.login
+               var name = {{$steps.parse-issue-output.reponame }}
+               github.rest.repos.createInOrg({
+               org,
+               name,
+               });
                
-       - uses: actions/github-script@v6
-          with:
-            script: |
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: '👋 Repository has been created!'
-              })
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Repository has been created!'
+            })
         
