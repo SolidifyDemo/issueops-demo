@@ -16,7 +16,7 @@ jobs:
 
       - name: Dump GitHub context
         env:
-          GITHUB_CONTEXT: $
+           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
         
       - name: Parse Issue
@@ -38,7 +38,7 @@ jobs:
         with:
            script: |       
                var org = context.payload.repository.owner.login
-               var name = {{$steps.parse-issue-output.reponame }}
+               var name = ${{ steps.parse-issue.outputs.reponame }}
                github.rest.repos.createInOrg({
                org,
                name,
