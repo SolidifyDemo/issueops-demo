@@ -4,7 +4,7 @@ title: "Request repository creation"
 body:
   - type: "input"
     attributes:
-      label: "Repository name
+      label: "Repository name"
       description: "Requested repository name"
       placeholder: "my-new-repo"
     validations:
