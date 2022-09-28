@@ -18,6 +18,13 @@ jobs:
         env:
            GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+      
+      - name: Get token
+        id: sign-token
+        uses: machine-learning-apps/actions-app-token@2d92b2a2bb7030dca3dd14975ae44799debed2e8
+        with:
+          APP_PEM: ${{ secrets.APP_PEM }}
+          APP_ID: ${{ secrets.APP_ID }}  
         
       - name: Parse Issue
         id: parse-issue
