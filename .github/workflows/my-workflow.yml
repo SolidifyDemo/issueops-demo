@@ -35,7 +35,7 @@ jobs:
       - name: Create a Repository
         uses: actions/github-script@v6
         with:
-           github-token: ${{ secrets.MY_PAT }}
+           github-token: ${{ steps.sign-token.outputs.app_token }}
            script: |       
                var org = context.payload.repository.owner.login;
                var name = "${{ steps.parse-issue.outputs.reponame }}";
